@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtYatra - Discover Indian Art Heritage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        saffron: '#FF6B35',
+                        indigo: '#2D3748',
+                        terracotta: '#E53E3E',
+                        golden: '#F6AD55',
+                        cream: '#FEFCFB',
+                        emerald: '#38A169'
+                    },
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF6B35 0%, #F6AD55 50%, #E53E3E 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .upload-zone {
+            border: 3px dashed #FF6B35;
+            transition: all 0.3s ease;
+        }
+        .upload-zone.drag-over {
+            border-color: #E53E3E;
+            background-color: #FFF5F5;
+            transform: scale(1.02);
+        }
+        .pin-bounce {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-cream font-body">
+    <!-- Navigation -->
+    <!-- @COMPONENT: Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-display font-bold text-indigo">
+                        <i class="fas fa-palette text-saffron mr-2"></i>
+                        ArtYatra
+                    </h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#home" class="text-gray-700 hover:text-saffron transition-colors duration-300" data-event="click:navigateToHome">Home</a>
+                    <a href="#explore" class="text-gray-700 hover:text-saffron transition-colors duration-300" data-event="click:navigateToExplore">Explore</a>
+                    <a href="#about" class="text-gray-700 hover:text-saffron transition-colors duration-300" data-event="click:navigateToAbout">About</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-saffron" data-event="click:toggleMobileMenu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- Landing Page Section -->
+    <!-- @COMPONENT: LandingPage -->
+    <section id="landing-page" class="min-h-screen">
+        <!-- Hero Section -->
+        <div class="gradient-bg text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <div class="fade-in">
+                    <h1 class="text-4xl md:text-6xl font-display font-bold mb-6">
+                        Discover India's Rich
+                        <span class="text-golden">Artistic Heritage</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+                        Upload artwork images and explore their origins through AI-powered classification and interactive mapping
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl md:text-4xl font-display font-bold text-indigo mb-4">
+                            Start Your Art Journey
+                        </h2>
+                        <p class="text-gray-600 text-lg">
+                            Upload an image of Indian artwork to discover its style and cultural origins
+                        </p>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <div class="bg-cream rounded-2xl p-8 shadow-lg">
+                        <!-- @FUNCTIONALITY: File upload with drag-and-drop support, image preview, and validation -->
+                        <div class="upload-zone rounded-xl p-12 text-center bg-white" id="upload-zone" data-implementation="Implement drag-and-drop file upload with image preview">
+                            <div id="upload-content">
+                                <i class="fas fa-cloud-upload-alt text-6xl text-saffron mb-6"></i>
+                                <h3 class="text-xl font-semibold text-indigo mb-3">Drop your artwork image here</h3>
+                                <p class="text-gray-600 mb-6">or click to browse from your device</p>
+                                <input type="file" id="image-upload" class="hidden" accept="image/*" data-event="change:handleFileUpload">
+                                <button class="bg-saffron text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300" data-event="click:triggerFileInput">
+                                    Choose Image
+                                </button>
+                            </div>
+                            
+                            <!-- Image Preview (Hidden initially) -->
+                            <div id="image-preview" class="hidden">
+                                <img id="preview-image" src="" alt="Uploaded artwork preview" class="max-w-md mx-auto rounded-lg shadow-lg mb-6">
+                                <div class="flex justify-center space-x-4">
+                                    <button class="bg-emerald text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors duration-300" data-event="click:classifyImage" data-implementation="Send image to Gemini API for classification">
+                                        <i class="fas fa-magic mr-2"></i>
+                                        Classify Artwork
+                                    </button>
+                                    <button class="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-300" data-event="click:resetUpload">
+                                        <i class="fas fa-redo mr-2"></i>
+                                        Upload Different Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading-state" class="hidden text-center py-12">
+                            <div class="loading-spinner mx-auto mb-6"></div>
+                            <h3 class="text-xl font-semibold text-indigo mb-3">Analyzing your artwork...</h3>
+                            <p class="text-gray-600">Our AI is identifying the art style and cultural origins</p>
+                        </div>
+                    </div>
+
+                    <!-- Art Styles Gallery Preview -->
+                    <div class="mt-16">
+                        <h3 class="text-2xl font-display font-bold text-indigo mb-8 text-center">
+                            Supported Art Styles
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-8">
+                            <!-- Warli Art Card -->
+                            <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                                <!-- Traditional Warli art with geometric patterns and tribal figures -->
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Warli Art Example" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h4 class="text-xl font-display font-bold text-indigo mb-2">Warli Art</h4>
+                                    <p class="text-gray-600 text-sm mb-3">Maharashtra, India</p>
+                                    <p class="text-gray-700">Ancient tribal art form featuring geometric patterns and nature themes</p>
+                                </div>
+                            </div>
+
+                            <!-- Pochampally Ikat Card -->
+                            <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                                <!-- Colorful Pochampally ikat textile with traditional patterns -->
+                                <img src="https://pixabay.com/get/g4497cab9e4f40da6104b8993a1ba2554e54863f51d8114466bd36fdcc3856cb3338eecc4dcc6110bd1a54ba90b5bb3685b7b7a7b1d8281a662fd7a79a9230c61_1280.jpg" alt="Pochampally Ikat Pattern" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h4 class="text-xl font-display font-bold text-indigo mb-2">Pochampally Ikat</h4>
+                                    <p class="text-gray-600 text-sm mb-3">Telangana, India</p>
+                                    <p class="text-gray-700">Intricate tie-dye textile technique creating beautiful geometric patterns</p>
+                                </div>
+                            </div>
+
+                            <!-- Thanjavur Painting Card -->
+                            <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                                <!-- Traditional Thanjavur painting with gold foil work -->
+                                <img src="https://pixabay.com/get/g507bdd56a163166a6f11dc6f8b2d199cbb94e26fd5041dc572cf1fca9c818ebb5182c7657d6779862581ea46a18c0d2195845843b5b1197563c4f43d7d7503a6_1280.jpg" alt="Thanjavur Painting Example" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h4 class="text-xl font-display font-bold text-indigo mb-2">Thanjavur Painting</h4>
+                                    <p class="text-gray-600 text-sm mb-3">Tamil Nadu, India</p>
+                                    <p class="text-gray-700">Classical South Indian paintings with rich colors and gold foil work</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: LandingPage -->
+
+    <!-- Map Explorer Section -->
+    <!-- @COMPONENT: MapExplorer [mapData: art styles with locations] -->
+    <section id="map-explorer" class="hidden min-h-screen bg-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-indigo mb-4">
+                    Art Heritage Map of India
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    Explore the geographical origins of different Indian art styles
+                </p>
+            </div>
+
+            <!-- Classification Result Card -->
+            <div id="classification-result" class="max-w-2xl mx-auto mb-8 bg-gradient-to-r from-saffron to-golden text-white rounded-xl p-6 shadow-lg hidden">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-bold" data-bind="classificationResult.artStyle">Warli Art</h3>
+                        <p class="text-sm opacity-90" data-bind="classificationResult.confidence">Confidence: 94%</p>
+                        <p class="mt-2" data-bind="classificationResult.description">Your artwork has been classified as Warli Art from Maharashtra</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div id="india-map" class="h-96 md:h-[500px] relative" data-implementation="Initialize Leaflet map with Indian bounds and custom pin markers">
+                    <!-- Map will be rendered here -->
+                    <div class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center">
+                            <i class="fas fa-map-marked-alt text-6xl text-saffron mb-4"></i>
+                            <p class="text-gray-600">Interactive map will load here</p>
+                        </div>
+                    </div>
+
+                    <!-- Sample Map Pins (Visual representation) -->
+                    <div class="absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+                        <div class="bg-saffron text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg pin-bounce cursor-pointer" data-art-style="warli" data-event="click:showArtStyleTooltip">
+                            <i class="fas fa-palette text-sm"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-3/4 left-2/3 transform -translate-x-1/2 -translate-y-1/2">
+                        <div class="bg-terracotta text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg pin-bounce cursor-pointer" data-art-style="pochampally" data-event="click:showArtStyleTooltip">
+                            <i class="fas fa-palette text-sm"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-1/4 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                        <div class="bg-emerald text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg pin-bounce cursor-pointer" data-art-style="thanjavur" data-event="click:showArtStyleTooltip">
+                            <i class="fas fa-palette text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Legend -->
+                <div class="p-6 bg-gray-50 border-t">
+                    <h4 class="font-semibold text-indigo mb-4">Art Style Legend</h4>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-saffron rounded-full mr-3"></div>
+                            <span class="text-gray-700">Warli Art - Maharashtra</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-terracotta rounded-full mr-3"></div>
+                            <span class="text-gray-700">Pochampally Ikat - Telangana</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-emerald rounded-full mr-3"></div>
+                            <span class="text-gray-700">Thanjavur Painting - Tamil Nadu</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Art Style Details Cards -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+                <!-- @MAP: artStyles.map(artStyle => ( -->
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <!-- Sample Warli art pattern with traditional motifs -->
+                    <img src="https://pixabay.com/get/g29b97fad91b9f7a52e5bbea110316b8041131fe86721d16b6954fcfe31820ee755e16c20b484ed4d051a1f9ab40e7d8c10e0a59bf4a1c7498740cfd1eb5735b8_1280.jpg" alt="Warli Art Detail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-saffron rounded-full mr-3"></div>
+                            <h4 class="text-xl font-display font-bold text-indigo" data-bind="artStyle.name">Warli Art</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3" data-bind="artStyle.location">Maharashtra, India</p>
+                        <p class="text-gray-700 mb-4" data-bind="artStyle.description">A traditional tribal art form using simple geometric patterns to depict daily life and nature</p>
+                        
+                        <div class="bg-cream p-4 rounded-lg">
+                            <h5 class="font-semibold text-indigo mb-2">Fun Facts:</h5>
+                            <ul class="text-sm text-gray-700 space-y-1" data-bind="artStyle.funFacts">
+                                <li>• Uses only white pigment on mud walls</li>
+                                <li>• Traditionally painted by women</li>
+                                <li>• Over 2,500 years old</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <!-- Vibrant Pochampally ikat textile showing traditional dyeing technique -->
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=300" alt="Pochampally Ikat Detail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-terracotta rounded-full mr-3"></div>
+                            <h4 class="text-xl font-display font-bold text-indigo">Pochampally Ikat</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Telangana, India</p>
+                        <p class="text-gray-700 mb-4">A resist dyeing technique creating intricate patterns on silk and cotton textiles</p>
+                        
+                        <div class="bg-cream p-4 rounded-lg">
+                            <h5 class="font-semibold text-indigo mb-2">Fun Facts:</h5>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>• UNESCO Intangible Cultural Heritage</li>
+                                <li>• Takes 3-4 months to complete one saree</li>
+                                <li>• Known as the "Silk City of India"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
+                    <!-- Ornate Thanjavur painting with golden details and religious themes -->
+                    <img src="https://pixabay.com/get/g04e7215edbfb3048b58474c3a763203f4b50862b97a22cb70bd227e04568a1f8edf7a8fd3d914455e6353ceef93dcb2c57f7e22622cbe1706cca118dafdab257_1280.jpg" alt="Thanjavur Painting Detail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-emerald rounded-full mr-3"></div>
+                            <h4 class="text-xl font-display font-bold text-indigo">Thanjavur Painting</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Tamil Nadu, India</p>
+                        <p class="text-gray-700 mb-4">Classical South Indian paintings characterized by rich colors and surface richness</p>
+                        
+                        <div class="bg-cream p-4 rounded-lg">
+                            <h5 class="font-semibold text-indigo mb-2">Fun Facts:</h5>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>• Uses real gold foil and precious stones</li>
+                                <li>• Dates back to 16th century</li>
+                                <li>• Protected geographical indication status</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+
+            <!-- Back to Upload Button -->
+            <div class="text-center mt-12">
+                <button class="bg-saffron text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-300" data-event="click:backToUpload">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Upload Another Artwork
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: MapExplorer -->
+
+    <!-- Art Style Tooltip Modal -->
+    <!-- @COMPONENT: ArtStyleTooltip [artStyleData: detailed information] -->
+    <div id="art-style-tooltip" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" data-implementation="Show/hide modal with art style details">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl transform transition-all duration-300">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-2xl font-display font-bold text-indigo" data-bind="selectedArtStyle.name">Art Style Name</h3>
+                <button class="text-gray-400 hover:text-gray-600 text-2xl" data-event="click:closeTooltip">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Detailed Warli art close-up showing intricate patterns -->
+            <img id="tooltip-image" src="https://pixabay.com/get/g9e08ab86c47f84fcec391f21f699a2c3e02292a5301ea6b1ce576f46653322a9bd4099f2a5df3da0d9b0f820eab23dfd01c4f7a4c571f178297e7fc9d5ba52c8_1280.jpg" alt="Art Style Detail" class="w-full h-48 object-cover rounded-lg mb-4" data-bind="selectedArtStyle.imageUrl">
+            
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-indigo mb-2">Origin</h4>
+                    <p class="text-gray-700" data-bind="selectedArtStyle.origin">Maharashtra, India</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-indigo mb-2">Description</h4>
+                    <p class="text-gray-700" data-bind="selectedArtStyle.fullDescription">Detailed description of the art style...</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-indigo mb-2">Cultural Significance</h4>
+                    <p class="text-gray-700" data-bind="selectedArtStyle.culturalSignificance">Cultural significance information...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ArtStyleTooltip -->
+
+    <!-- Footer -->
+    <footer class="bg-indigo text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-display font-bold mb-4">ArtYatra</h3>
+                    <p class="text-gray-300">Discovering and preserving India's rich artistic heritage through technology</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Explore</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-golden transition-colors">Upload Art</a></li>
+                        <li><a href="#" class="hover:text-golden transition-colors">Art Styles</a></li>
+                        <li><a href="#" class="hover:text-golden transition-colors">Cultural Map</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Learn</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-golden transition-colors">About Indian Art</a></li>
+                        <li><a href="#" class="hover:text-golden transition-colors">Art History</a></li>
+                        <li><a href="#" class="hover:text-golden transition-colors">Cultural Stories</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-golden transition-colors">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-golden transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-golden transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 ArtYatra. Preserving cultural heritage through innovation.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        (function() {
+            // TODO: Implement business logic, API calls, and state management
+            
+            // UI State Management
+            let currentView = 'landing';
+            let uploadedImage = null;
+            let classificationResult = null;
+            
+            // DOM Elements
+            const landingPage = document.getElementById('landing-page');
+            const mapExplorer = document.getElementById('map-explorer');
+            const uploadZone = document.getElementById('upload-zone');
+            const imageUpload = document.getElementById('image-upload');
+            const uploadContent = document.getElementById('upload-content');
+            const imagePreview = document.getElementById('image-preview');
+            const previewImage = document.getElementById('preview-image');
+            const loadingState = document.getElementById('loading-state');
+            const classificationResultCard = document.getElementById('classification-result');
+            const artStyleTooltip = document.getElementById('art-style-tooltip');
+            
+            // File Upload Handling
+            uploadZone.addEventListener('click', () => {
+                imageUpload.click();
+            });
+            
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('drag-over');
+            });
+            
+            uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+            });
+            
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+            
+            imageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFileUpload(file);
+                }
+            });
+            
+            function handleFileUpload(file) {
+                // TODO: Add file validation (size, type, etc.)
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImage = e.target.result;
+                    previewImage.src = uploadedImage;
+                    uploadContent.classList.add('hidden');
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Classification Simulation
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-event="click:classifyImage"]')) {
+                    e.preventDefault();
+                    startClassification();
+                }
+                
+                if (e.target.closest('[data-event="click:resetUpload"]')) {
+                    e.preventDefault();
+                    resetUpload();
+                }
+                
+                if (e.target.closest('[data-event="click:backToUpload"]')) {
+                    e.preventDefault();
+                    showLandingPage();
+                }
+                
+                if (e.target.closest('[data-event="click:showArtStyleTooltip"]')) {
+                    e.preventDefault();
+                    const artStyle = e.target.closest('[data-art-style]').dataset.artStyle;
+                    showArtStyleTooltip(artStyle);
+                }
+                
+                if (e.target.closest('[data-event="click:closeTooltip"]')) {
+                    e.preventDefault();
+                    artStyleTooltip.classList.add('hidden');
+                }
+            });
+            
+            function startClassification() {
+                imagePreview.classList.add('hidden');
+                loadingState.classList.remove('hidden');
+                
+                // TODO: Replace with actual Gemini API call
+                setTimeout(() => {
+                    // Simulate classification result
+                    classificationResult = {
+                        artStyle: 'Warli Art',
+                        confidence: '94%',
+                        description: 'Your artwork has been classified as Warli Art from Maharashtra',
+                        location: { lat: 19.7515, lng: 75.7139 }
+                    };
+                    
+                    showMapExplorer();
+                }, 3000);
+            }
+            
+            function resetUpload() {
+                uploadedImage = null;
+                uploadContent.classList.remove('hidden');
+                imagePreview.classList.add('hidden');
+                loadingState.classList.add('hidden');
+                imageUpload.value = '';
+            }
+            
+            function showLandingPage() {
+                currentView = 'landing';
+                landingPage.classList.remove('hidden');
+                mapExplorer.classList.add('hidden');
+                classificationResultCard.classList.add('hidden');
+                resetUpload();
+            }
+            
+            function showMapExplorer() {
+                currentView = 'map';
+                landingPage.classList.add('hidden');
+                mapExplorer.classList.remove('hidden');
+                loadingState.classList.add('hidden');
+                
+                if (classificationResult) {
+                    classificationResultCard.classList.remove('hidden');
+                    // TODO: Update classification result display with actual data
+                }
+                
+                // TODO: Initialize Leaflet map with real data
+                initializeMap();
+            }
+            
+            function initializeMap() {
+                // TODO: Replace with actual Leaflet map initialization
+                // const map = L.map('india-map').setView([20.5937, 78.9629], 5);
+                // Add tile layer, markers, and interactivity
+            }
+            
+            function showArtStyleTooltip(artStyleName) {
+                // TODO: Fetch art style details from database
+                const mockData = {
+                    warli: {
+                        name: 'Warli Art',
+                        origin: 'Maharashtra, India',
+                        fullDescription: 'A traditional tribal art form that uses simple geometric patterns to depict daily life, nature, and social activities of the Warli tribe.',
+                        culturalSignificance: 'Warli paintings are a reflection of the tribe\'s close relationship with nature and their spiritual beliefs.'
+                    },
+                    pochampally: {
+                        name: 'Pochampally Ikat',
+                        origin: 'Telangana, India',
+                        fullDescription: 'A resist dyeing technique where threads are dyed before weaving to create intricate patterns on silk and cotton fabrics.',
+                        culturalSignificance: 'Represents the rich textile heritage of South India and is recognized by UNESCO as an Intangible Cultural Heritage.'
+                    },
+                    thanjavur: {
+                        name: 'Thanjavur Painting',
+                        origin: 'Tamil Nadu, India',
+                        fullDescription: 'Classical South Indian paintings characterized by rich colors, surface richness, and the use of gold foil.',
+                        culturalSignificance: 'These paintings are deeply rooted in Hindu religious traditions and represent the cultural legacy of the Maratha court.'
+                    }
+                };
+                
+                const artStyleData = mockData[artStyleName];
+                if (artStyleData) {
+                    // TODO: Update tooltip content with real data binding
+                    artStyleTooltip.classList.remove('hidden');
+                }
+            }
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

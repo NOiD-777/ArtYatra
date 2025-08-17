@@ -1,0 +1,87 @@
+Super Prompt for ArtYatra:
+
+Build a full-stack web application called ArtYatra. The app should allow users to upload an image of artwork, classify the artwork into local Indian art styles (e.g., Warli, Pochampally Ikat, Thanjavur) using the Gemini API or equivalent AI image classification model, and then display the results interactively on a map of India. The project should use React for the frontend and any suitable backend framework (Node.js/Express recommended) with a database for storing art styles and metadata.
+
+Frontend Requirements (React + Tailwind/Material UI):
+
+Landing page with a file upload form.
+
+After upload, show a loading/processing animation while the AI classifies the image.
+
+Upon classification, navigate to a map page:
+
+Use Leaflet or Google Maps React library.
+
+Show pins for origin locations of classified art styles.
+
+On hover over pin, display:
+
+Art style name
+
+Fun facts
+
+Short description
+
+Map should be zoomed to India with custom pin icons.
+
+Responsive design for desktop and mobile.
+
+Backend Requirements (Node.js/Express recommended):
+
+POST /classify endpoint to accept uploaded images.
+
+Send the image to the Gemini API for classification.
+
+Store classification results in the database with:
+
+Art style
+
+Image reference (URL or base64)
+
+Date/time
+
+Optional user metadata
+
+GET /artstyles endpoint to fetch all art styles with location data and fun facts for the map.
+
+Database (SQLite/PostgreSQL/MongoDB):
+
+Table/Collection: art_styles
+
+id (primary key)
+
+name (art style name)
+
+origin_location (latitude, longitude)
+
+description (short description)
+
+fun_facts (array or text)
+
+image_url (optional reference for sample image)
+
+API Integration:
+
+Integrate Gemini API to classify uploaded images.
+
+Map the classified result to local art styles metadata stored in the database.
+
+Extras / UX:
+
+Smooth transitions between pages.
+
+Loading indicators during API calls.
+
+Clean, visually appealing UI with React + Tailwind CSS.
+
+Optional: Users can click a pin to see a modal or tooltip with more details.
+
+Deliverables:
+
+Full frontend React code (pages, components, map integration, upload form).
+
+Backend Node.js/Express code with endpoints and Gemini API integration.
+
+Database schema with sample data for at least 3 art styles (Warli, Pochampally Ikat, Thanjavur).
+
+Instructions to run the app locally.
