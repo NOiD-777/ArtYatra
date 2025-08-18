@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
+import SearchPage from "@/pages/search";
 import Map from "@/pages/map";
 import NotFound from "@/pages/not-found";
 import UploadToDatabase from "@/pages/upload-db";
@@ -24,12 +25,18 @@ function Router() {
           <Map />
         </Protected>
       </Route>
-      {/* NEW */}
       <Route path="/upload-db">
         <Protected>
           <UploadToDatabase />
         </Protected>
       </Route>
+      {/* ✅ Move /search ABOVE the catch-all */}
+      <Route path="/search">
+        <Protected>
+          <SearchPage />
+        </Protected>
+      </Route>
+      {/* Keep this LAST as the fallback */}
       <Route>{() => <NotFound />}</Route>
     </Switch>
   );

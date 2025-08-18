@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Search, MapPin } from "lucide-react";
@@ -11,9 +11,12 @@ import L, { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 
 // ----- Red marker icon -----
 const RedIcon = L.icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  iconRetinaUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+  iconRetinaUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
@@ -364,7 +367,7 @@ function withinBounds(lat: number, lng: number): boolean {
   return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
 }
 
-function haversineKm(a: {lat: number; lng: number}, b: {lat: number; lng: number}): number {
+function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const toRad = (d: number) => (d * Math.PI) / 180;
   const R = 6371; // km
   const dLat = toRad(b.lat - a.lat);
@@ -377,13 +380,12 @@ function haversineKm(a: {lat: number; lng: number}, b: {lat: number; lng: number
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
-// Placeholder “API” to get one image per category (swap with Wiki/Commons later)
+// Placeholder image API (replace with Wiki/Commons later)
 async function fetchCategoryImage(_category: string): Promise<string> {
-  // TODO: Replace with real API call. Keep external placeholder for now.
   return `https://placehold.co/480x320/png?text=${encodeURIComponent(_category)}`;
 }
 
-// Map click helper (used in Map mode only)
+// Map click helper (used in Map tab)
 function ClickToSetMarker({
   onPick,
   onOutOfBounds,
@@ -402,7 +404,7 @@ function ClickToSetMarker({
 }
 
 export default function SearchPage() {
-  const [, setLocation] = useLocation();
+  const [loc, setLocation] = useLocation();
 
   // tab: "text" | "map"
   const [mode, setMode] = useState<"text" | "map">("text");
@@ -421,7 +423,20 @@ export default function SearchPage() {
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
 
-  // Geolocate (optional) for Map mode
+  // Handle deep-link `?category=...` on initial load
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("category");
+      if (cat && CATEGORY_INFO[cat]) {
+        setMode("text");
+        setSelectedCategory(cat);
+        setSelectedInfo(CATEGORY_INFO[cat]);
+      }
+    } catch {}
+  }, []);
+
+  // Geolocate (optional) for Map tab
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -443,6 +458,8 @@ export default function SearchPage() {
     try {
       const info = CATEGORY_INFO[selectedCategory];
       setSelectedInfo(info ?? null);
+      // keep URL shareable
+      setLocation(`/search?category=${encodeURIComponent(selectedCategory)}`);
     } finally {
       setLoadingText(false);
     }
@@ -512,7 +529,7 @@ export default function SearchPage() {
             onClick={() => setMode("text")}
             className={mode === "text" ? "bg-orange-500 hover:bg-orange-600" : ""}
           >
-            <Search className="mr-2" size={16} /> Text
+            <Search className="mr-2" size={16} /> Categories
           </Button>
           <Button
             variant={mode === "map" ? "default" : "secondary"}
@@ -622,7 +639,7 @@ export default function SearchPage() {
           </Card>
         )}
 
-        {/* MAP MODE (pin + radius → show matching categories below as horizontal cards) */}
+        {/* MAP MODE (pin + radius → horizontal cards; clicking a card jumps to Text tab + loads that category) */}
         {mode === "map" && (
           <Card>
             <CardContent className="p-6 space-y-5">
@@ -634,7 +651,9 @@ export default function SearchPage() {
                     min={1}
                     max={100}
                     value={radiusKm}
-                    onChange={(e) => setRadiusKm(Math.max(1, Math.min(100, Number(e.target.value || 1))))}
+                    onChange={(e) =>
+                      setRadiusKm(Math.max(1, Math.min(100, Number(e.target.value || 1))))
+                    }
                     className="border rounded-md px-3 py-2 text-sm max-w-[120px]"
                   />
                 </div>
@@ -648,7 +667,9 @@ export default function SearchPage() {
               </form>
 
               {hint && (
-                <p className="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded p-2">{hint}</p>
+                <p className="text-xs text-orange-700 bg-orange-50 border border-orange-200 rounded p-2">
+                  {hint}
+                </p>
               )}
 
               {/* Map for picking center */}
@@ -693,9 +714,16 @@ export default function SearchPage() {
                   <div className="overflow-x-auto">
                     <div className="flex gap-4 min-w-max py-1">
                       {geoMatches.map((m) => (
-                        <div
+                        <button
                           key={m.key}
-                          className="w-72 flex-shrink-0 border rounded-xl bg-white shadow-sm hover:shadow-md transition"
+                          onClick={() => {
+                            // Switch to Text tab, load category, and update URL for shareability
+                            setSelectedCategory(m.key);
+                            setSelectedInfo(m.info);
+                            setMode("text");
+                            setLocation(`/search?category=${encodeURIComponent(m.key)}`);
+                          }}
+                          className="w-72 flex-shrink-0 border rounded-xl bg-white shadow-sm hover:shadow-md transition text-left"
                         >
                           <div className="h-40 w-full overflow-hidden rounded-t-xl bg-gray-100">
                             <img
@@ -714,7 +742,7 @@ export default function SearchPage() {
                               {m.info.description}
                             </p>
                           </div>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>
