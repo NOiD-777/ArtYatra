@@ -7,9 +7,20 @@ import FileUpload from "@/components/file-upload";
 import ArtStyleCard from "@/components/art-style-card";
 import LoadingSpinner from "@/components/loading-spinner";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 import type { ArtStyle } from "@shared/schema";
 
+
+
 export default function Home() {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    // Optionally redirect to login after logout
+    window.location.href = "/login";
+  }
+  
   const [, setLocation] = useLocation();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
@@ -95,6 +106,9 @@ export default function Home() {
               <a href="#home" className="text-gray-700 hover:text-orange-500 transition-colors duration-300">
                 Home
               </a>
+              <Button onClick={handleLogout} className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg shadow">
+                Logout
+              </Button>
             </div>
           </div>
         </div>
