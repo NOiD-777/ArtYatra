@@ -9,6 +9,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 
+
 // ----- Red marker icon -----
 const RedIcon = L.icon({
   iconUrl:
@@ -42,29 +43,21 @@ const CATEGORIES = [
 
   // 🧵 Textiles & Weaving
   "Pochampally Ikat (Telangana)",
-  "Mangalagiri Cotton (Andhra)",
-  "Venkatagiri Sarees (Andhra)",
-  "Dharmavaram Silk (Andhra)",
-  "Uppada Jamdani (Andhra)",
-  "Narayanpet Sarees (Telangana)",
-  "Gadwal Sarees (Telangana)",
 
   // 🪵 Crafts & Woodwork
   "Nirmal Toys (Telangana)",
-  "Etikoppaka Toys (Andhra)",
-  "Budithi Brassware (Andhra)",
+  "Etikoppaka Wooden Doll (Andhra)",
   "Kondapalli Toys (Andhra)",
 
   // 🪨 Sculpture & Stone Arts
   "Banjara Embroidery (Both States)",
-  "Stone Carving (Andhra)",
+  "Andhra Stone Carving (Andhra)",
   "Bidriware (Telangana)",
 
   // 🎭 Folk & Tribal Arts
   "Oggu Katha (Telangana)",
   "Burra Katha (Andhra)",
-  "Veeranatyam (Andhra)",
-  "Lambadi Embroidery & Dance (Both States)",
+  "Lambadi Dance (Both States)",
   "Tholu Bommalata (Andhra & Telangana)",
 ];
 
@@ -155,72 +148,7 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Many households still use traditional looms.",
     ],
   },
-  "Mangalagiri Cotton (Andhra)": {
-    originName: "Mangalagiri, Andhra Pradesh",
-    lat: 16.433, lng: 80.568,
-    description:
-      "Fine cottons with zari borders; simple, elegant temple borders are typical.",
-    funFacts: [
-      "Woven on pit looms; airy and comfortable.",
-      "Known for Nizam-style borders.",
-      "Popular for daily and festive wear.",
-    ],
-  },
-  "Venkatagiri Sarees (Andhra)": {
-    originName: "Venkatagiri, Andhra Pradesh",
-    lat: 13.966, lng: 79.580,
-    description:
-      "Exquisite fine weaving with elegant motifs and gold thread work.",
-    funFacts: [
-      "Historically patronized by royals.",
-      "Lightweight with jamdani-like motifs.",
-      "Soft pastels are common palettes.",
-    ],
-  },
-  "Dharmavaram Silk (Andhra)": {
-    originName: "Dharmavaram, Andhra Pradesh",
-    lat: 14.414, lng: 77.720,
-    description:
-      "Rich silks with broad borders and muted tones—wedding favorites.",
-    funFacts: [
-      "Heavy zari borders with contrast pallus.",
-      "Complementary color play is a signature.",
-      "Related techniques to Kanchipuram.",
-    ],
-  },
-  "Uppada Jamdani (Andhra)": {
-    originName: "Uppada, Andhra Pradesh",
-    lat: 17.065, lng: 82.356,
-    description:
-      "Lightweight jamdani weaving with ornate motifs woven into sheer fabrics.",
-    funFacts: [
-      "Motifs are hand-inlaid on the loom.",
-      "Distinct airy drape yet rich look.",
-      "Often pastel or jewel-toned.",
-    ],
-  },
-  "Narayanpet Sarees (Telangana)": {
-    originName: "Narayanpet, Telangana",
-    lat: 16.747, lng: 77.496,
-    description:
-      "Checked bodies with contrasting borders and traditional temple motifs.",
-    funFacts: [
-      "Cotton and silk blends are common.",
-      "Durable everyday wear with festive appeal.",
-      "Earthy, bold palettes are typical.",
-    ],
-  },
-  "Gadwal Sarees (Telangana)": {
-    originName: "Gadwal, Telangana",
-    lat: 16.234, lng: 77.793,
-    description:
-      "Lightweight sarees with silk borders and cotton bodies—classic interlock weaving.",
-    funFacts: [
-      "Borders and body woven separately then joined.",
-      "GI-tagged and widely recognized.",
-      "Striking contrasts for festive wear.",
-    ],
-  },
+  
 
   // 🪵 Crafts & Woodwork
   "Nirmal Toys (Telangana)": {
@@ -234,7 +162,7 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Natural dyes and lacquer finishes.",
     ],
   },
-  "Etikoppaka Toys (Andhra)": {
+  "Etikoppaka Wooden Doll (Andhra)": {
     originName: "Etikoppaka, Andhra Pradesh",
     lat: 17.997, lng: 83.431,
     description:
@@ -243,17 +171,6 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Known for soft, organic forms.",
       "Craft dates back centuries along Varaha belt.",
       "GI-tagged handicraft.",
-    ],
-  },
-  "Budithi Brassware (Andhra)": {
-    originName: "Budithi (Srikakulam), Andhra Pradesh",
-    lat: 18.415, lng: 83.735,
-    description:
-      "Brassware with geometric, linear motifs—utility and ritual objects.",
-    funFacts: [
-      "Casting and finishing are inherited community skills.",
-      "Popular for puja lamps and decor.",
-      "Minimal yet striking designs.",
     ],
   },
   "Kondapalli Toys (Andhra)": {
@@ -280,7 +197,7 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Found across Deccan trade routes.",
     ],
   },
-  "Stone Carving (Andhra)": {
+  "Andhra Stone Carving (Andhra)": {
     originName: "Tirupati Region, Andhra Pradesh",
     lat: 13.628, lng: 79.419,
     description:
@@ -326,18 +243,7 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Popular at fairs and village gatherings.",
     ],
   },
-  "Veeranatyam (Andhra)": {
-    originName: "Rayalaseema (Kurnool Axis)",
-    lat: 15.828, lng: 78.037,
-    description:
-      "Ritual dance dedicated to Veerabhadra—fiery movements and ceremonial props.",
-    funFacts: [
-      "Props include tridents and ritual flames.",
-      "Linked to Shaivite temple festivals.",
-      "Ash markings and bold colors in costume.",
-    ],
-  },
-  "Lambadi Embroidery & Dance (Both States)": {
+  "Lambadi Dance (Both States)": {
     originName: "Nalgonda/Nizamabad Corridors",
     lat: 17.056, lng: 79.267,
     description:

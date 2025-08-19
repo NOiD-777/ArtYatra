@@ -208,7 +208,7 @@ export default function Home() {
             </p>
           </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
-            <p>&copy; 2024 ArtYatra. Preserving cultural heritage through innovation.</p>
+            <p>&copy; 2025 ArtYatra. Preserving cultural heritage through innovation.</p>
           </div>
         </div>
       </footer>
