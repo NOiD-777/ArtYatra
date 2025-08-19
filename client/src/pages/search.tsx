@@ -9,15 +9,13 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 
-
 // ----- Red marker icon -----
 const RedIcon = L.icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
   iconRetinaUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
@@ -46,7 +44,6 @@ const CATEGORIES = [
 
   // 🪵 Crafts & Woodwork
   "Nirmal Toys (Telangana)",
-  "Etikoppaka Wooden Doll (Andhra)",
   "Kondapalli Toys (Andhra)",
 
   // 🪨 Sculpture & Stone Arts
@@ -56,18 +53,8 @@ const CATEGORIES = [
 
   // 🎭 Folk & Tribal Arts
   "Oggu Katha (Telangana)",
-  "Burra Katha (Andhra)",
-  "Lambadi Dance (Both States)",
   "Tholu Bommalata (Andhra & Telangana)",
 ];
-
-type Result = {
-  id: string;
-  title: string;
-  snippet?: string;
-  lat?: number;
-  lng?: number;
-};
 
 type CategoryInfo = {
   originName: string;
@@ -82,7 +69,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   // 🎨 Painting & Scroll Arts
   "Cheriyal Scroll Paintings (Telangana)": {
     originName: "Cheriyal, Telangana",
-    lat: 18.994, lng: 78.890,
+    lat: 18.994,
+    lng: 78.89,
     description:
       "Narrative Nakashi scrolls illustrating epics and caste-based tales, traditionally used by storytellers.",
     funFacts: [
@@ -93,7 +81,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Nirmal Paintings (Telangana)": {
     originName: "Nirmal, Telangana",
-    lat: 19.095, lng: 78.344,
+    lat: 19.095,
+    lng: 78.344,
     description:
       "Mythological and nature themes on wood panels using bright hues and a distinct golden backdrop.",
     funFacts: [
@@ -104,7 +93,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Kalamkari (Andhra, Machilipatnam & Srikalahasti)": {
     originName: "Srikalahasti & Machilipatnam, Andhra Pradesh",
-    lat: 13.752, lng: 79.703,
+    lat: 13.752,
+    lng: 79.703,
     description:
       "Hand-painted or block-printed textiles narrating epics; Srikalahasti is freehand pen-work, Machilipatnam uses blocks.",
     funFacts: [
@@ -115,7 +105,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Lepakshi Wall Paintings (Andhra)": {
     originName: "Lepakshi, Andhra Pradesh",
-    lat: 13.804, lng: 77.609,
+    lat: 13.804,
+    lng: 77.609,
     description:
       "Vijayanagara-era murals adorning temple ceilings and walls, famed for dynamism and color.",
     funFacts: [
@@ -126,7 +117,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Deccani Miniature Painting": {
     originName: "Hyderabad Courts (Deccan)",
-    lat: 17.385, lng: 78.486,
+    lat: 17.385,
+    lng: 78.486,
     description:
       "Persian-influenced miniatures with opulent palettes and lyrical compositions.",
     funFacts: [
@@ -139,7 +131,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   // 🧵 Textiles & Weaving
   "Pochampally Ikat (Telangana)": {
     originName: "Bhoodan Pochampally, Telangana",
-    lat: 17.283, lng: 78.894,
+    lat: 17.283,
+    lng: 78.894,
     description:
       "Double-ikat weaving with intricate geometric motifs and vibrant contrasts.",
     funFacts: [
@@ -148,12 +141,12 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Many households still use traditional looms.",
     ],
   },
-  
 
   // 🪵 Crafts & Woodwork
   "Nirmal Toys (Telangana)": {
     originName: "Nirmal, Telangana",
-    lat: 19.095, lng: 78.344,
+    lat: 19.095,
+    lng: 78.344,
     description:
       "Handcrafted wooden toys painted in bright colors; shares aesthetics with Nirmal painting.",
     funFacts: [
@@ -162,20 +155,10 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Natural dyes and lacquer finishes.",
     ],
   },
-  "Etikoppaka Wooden Doll (Andhra)": {
-    originName: "Etikoppaka, Andhra Pradesh",
-    lat: 17.997, lng: 83.431,
-    description:
-      "Lathe-turned wooden toys finished with natural lacquer (Nakkapalli lacquerware).",
-    funFacts: [
-      "Known for soft, organic forms.",
-      "Craft dates back centuries along Varaha belt.",
-      "GI-tagged handicraft.",
-    ],
-  },
   "Kondapalli Toys (Andhra)": {
     originName: "Kondapalli, Andhra Pradesh",
-    lat: 16.620, lng: 80.534,
+    lat: 16.62,
+    lng: 80.534,
     description:
       "Hand-carved softwood figurines and sets; bright storytelling dioramas.",
     funFacts: [
@@ -188,7 +171,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   // 🪨 Sculpture & Stone Arts
   "Banjara Embroidery (Both States)": {
     originName: "Banjara/Lambadi Settlements (Deccan)",
-    lat: 16.750, lng: 78.050,
+    lat: 16.75,
+    lng: 78.05,
     description:
       "Mirror-work and bold embroidery by the Banjara (Lambadi) community, with vibrant geometric motifs.",
     funFacts: [
@@ -199,7 +183,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Andhra Stone Carving (Andhra)": {
     originName: "Tirupati Region, Andhra Pradesh",
-    lat: 13.628, lng: 79.419,
+    lat: 13.628,
+    lng: 79.419,
     description:
       "Temple sculpture traditions—pillars, icons, and reliefs with high craftsmanship.",
     funFacts: [
@@ -210,7 +195,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   },
   "Bidriware (Telangana)": {
     originName: "Hyderabad Market Tradition",
-    lat: 17.385, lng: 78.486,
+    lat: 17.385,
+    lng: 78.486,
     description:
       "Blackened metalware with silver inlay; Deccan courts popularized its patronage and trade.",
     funFacts: [
@@ -223,7 +209,8 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
   // 🎭 Folk & Tribal Arts
   "Oggu Katha (Telangana)": {
     originName: "Siddipet Region, Telangana",
-    lat: 18.104, lng: 78.846,
+    lat: 18.104,
+    lng: 78.846,
     description:
       "Ballad performance devoted to Mallanna and other deities—music and narration combined.",
     funFacts: [
@@ -232,31 +219,10 @@ const CATEGORY_INFO: Record<string, CategoryInfo> = {
       "Highly dramatic costumes and delivery.",
     ],
   },
-  "Burra Katha (Andhra)": {
-    originName: "Coastal Andhra (Guntur Belt)",
-    lat: 16.306, lng: 80.436,
-    description:
-      "Narrative storytelling with a central lead and two side performers, mixing satire and lore.",
-    funFacts: [
-      "Named after the ‘burra’ instrument.",
-      "Weaves social commentary with mythology.",
-      "Popular at fairs and village gatherings.",
-    ],
-  },
-  "Lambadi Dance (Both States)": {
-    originName: "Nalgonda/Nizamabad Corridors",
-    lat: 17.056, lng: 79.267,
-    description:
-      "Embroidery and dance of the Lambadi (Banjara) community—rich with mirrors and coins.",
-    funFacts: [
-      "Dance has swirling skirts and jingling adornments.",
-      "Embroidery motifs reflect nomadic heritage.",
-      "Garments are often heirloom pieces.",
-    ],
-  },
   "Tholu Bommalata (Andhra & Telangana)": {
     originName: "Nimmalakunta (Anantapur), Andhra Pradesh",
-    lat: 14.556, lng: 77.720,
+    lat: 14.556,
+    lng: 77.72,
     description:
       "Shadow-puppet theatre using painted translucent leather to narrate epics.",
     funFacts: [
@@ -286,9 +252,120 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
-// Placeholder image API (replace with Wiki/Commons later)
-async function fetchCategoryImage(_category: string): Promise<string> {
-  return `https://placehold.co/480x320/png?text=${encodeURIComponent(_category)}`;
+/** ---------------- Wikipedia helpers (with smart fallbacks) ---------------- */
+
+// Remove trailing parenthetical like " (Telangana)" ONLY for Wikipedia searches
+function wikiQueryFromCategory(cat: string): string {
+  return cat.replace(/\s*\([^)]*\)\s*$/, "").trim();
+}
+
+/** If a category needs better search terms, list them here (most-specific first). */
+const WIKI_QUERY_OVERRIDES: Record<string, string[]> = {
+  "Banjara Embroidery (Both States)": [
+    "Banjara embroidery",
+    "Lambadi embroidery",
+    "Lambani embroidery",
+    "Banjara costume",
+  ],
+  // Add more tricky ones later if needed:
+  // "Lambadi Dance (Both States)": ["Lambadi dance", "Lambani dance", "Banjara dance"],
+};
+
+// Build the candidate list: overrides (if any) + stripped category as fallback.
+function getWikiCandidates(cat: string): string[] {
+  const base = wikiQueryFromCategory(cat);
+  const overrides = WIKI_QUERY_OVERRIDES[cat] ?? [];
+  // de-duplicate while preserving order
+  return Array.from(new Set<string>([...overrides, base]));
+}
+
+// parse thumbnails from "query.pages"
+function extractThumbsFromPages(pagesObj: any, limit: number): string[] {
+  const pages = pagesObj ? Object.values<any>(pagesObj) : [];
+  return pages
+    .map((p: any) => p?.thumbnail?.source as string | undefined)
+    .filter(Boolean)
+    .slice(0, limit) as string[];
+}
+
+// 1) primary: generator=search
+async function fetchWikipediaThumbsPrimary(topic: string, limit = 5): Promise<string[]> {
+  const url =
+    `https://en.wikipedia.org/w/api.php` +
+    `?origin=*` +
+    `&action=query&format=json` +
+    `&prop=pageimages` +
+    `&generator=search` +
+    `&gsrsearch=${encodeURIComponent(topic)}` +
+    `&gsrlimit=${limit}` +
+    `&pilimit=${limit}` +
+    `&pithumbsize=400`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return extractThumbsFromPages(data?.query?.pages, limit);
+}
+
+// 2) fallback: list=search to get titles, then query pageimages by titles
+async function fetchWikipediaThumbsFallback(topic: string, limit = 5): Promise<string[]> {
+  const searchUrl =
+    `https://en.wikipedia.org/w/api.php` +
+    `?origin=*` +
+    `&action=query&format=json` +
+    `&list=search` +
+    `&srsearch=${encodeURIComponent(topic)}` +
+    `&srlimit=${limit}`;
+  const res = await fetch(searchUrl);
+  const data = await res.json();
+  const titles: string[] = (data?.query?.search || [])
+    .map((s: any) => s?.title)
+    .filter(Boolean)
+    .slice(0, limit);
+
+  if (titles.length === 0) return [];
+
+  const titlesParam = titles.map((t) => encodeURIComponent(t)).join("|");
+  const pagesUrl =
+    `https://en.wikipedia.org/w/api.php` +
+    `?origin=*` +
+    `&action=query&format=json` +
+    `&prop=pageimages` +
+    `&titles=${titlesParam}` +
+    `&pithumbsize=400`;
+  const res2 = await fetch(pagesUrl);
+  const data2 = await res2.json();
+  return extractThumbsFromPages(data2?.query?.pages, limit);
+}
+
+/** Try one topic; primary then fallback search. */
+async function fetchWikipediaThumbnails(topic: string, limit = 5): Promise<string[]> {
+  try {
+    const primary = await fetchWikipediaThumbsPrimary(topic, limit);
+    if (primary.length > 0) return primary;
+    const fallback = await fetchWikipediaThumbsFallback(topic, limit);
+    return fallback;
+  } catch (e) {
+    console.error("Wikipedia fetch error:", e);
+    return [];
+  }
+}
+
+/** Try a list of candidate topics; return the first set of images found. */
+async function fetchWikipediaThumbnailsForCandidates(candidates: string[], limit = 5): Promise<string[]> {
+  for (const t of candidates) {
+    const imgs = await fetchWikipediaThumbnails(t, limit);
+    if (imgs.length > 0) return imgs;
+  }
+  return [];
+}
+
+/** Lead image helper for candidates (single best thumbnail). */
+async function fetchWikipediaLeadImageForCandidates(candidates: string[]): Promise<string> {
+  for (const t of candidates) {
+    const imgs = await fetchWikipediaThumbnails(t, 1);
+    if (imgs.length > 0) return imgs[0];
+  }
+  const fallbackText = wikiQueryFromCategory(candidates[0] || "Image");
+  return `https://placehold.co/800x480/png?text=${encodeURIComponent(fallbackText)}`;
 }
 
 // Map click helper (used in Map tab)
@@ -319,10 +396,11 @@ export default function SearchPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedInfo, setSelectedInfo] = useState<CategoryInfo | null>(null);
   const [loadingText, setLoadingText] = useState(false);
+  const [thumbs, setThumbs] = useState<string[]>([]); // top-5 thumbnails
 
   // MAP search state
   const [markerPos, setMarkerPos] = useState<{ lat: number; lng: number } | null>(null);
-  const [radiusKm, setRadiusKm] = useState<number>(5);
+  const [radiusKm, setRadiusKm] = useState<number>(100);
   const [geoMatches, setGeoMatches] = useState<
     { key: string; info: CategoryInfo; distKm: number; imageUrl: string }[]
   >([]);
@@ -338,6 +416,8 @@ export default function SearchPage() {
         setMode("text");
         setSelectedCategory(cat);
         setSelectedInfo(CATEGORY_INFO[cat]);
+        // Preload images for deep-linked category (Wikipedia, with candidates)
+        fetchWikipediaThumbnailsForCandidates(getWikiCandidates(cat), 5).then(setThumbs);
       }
     } catch {}
   }, []);
@@ -357,13 +437,18 @@ export default function SearchPage() {
   }, []);
 
   // --- TEXT: search by category only (static) ---
-  const onSubmitText = (e: React.FormEvent) => {
+  const onSubmitText = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCategory) return;
     setLoadingText(true);
     try {
       const info = CATEGORY_INFO[selectedCategory];
       setSelectedInfo(info ?? null);
+
+      // Fetch top 5 thumbnails (Wikipedia, try overrides first)
+      const images = await fetchWikipediaThumbnailsForCandidates(getWikiCandidates(selectedCategory), 5);
+      setThumbs(images);
+
       // keep URL shareable
       setLocation(`/search?category=${encodeURIComponent(selectedCategory)}`);
     } finally {
@@ -395,15 +480,14 @@ export default function SearchPage() {
         })
         .filter((r) => r.distKm <= Math.max(1, Math.min(100, radiusKm)));
 
-      // fetch images in parallel (placeholder API for now)
+      // fetch one representative image per category (Wikipedia, with candidates)
       const withImages = await Promise.all(
         matchesRaw.map(async (m) => {
-          const imageUrl = await fetchCategoryImage(m.key);
+          const imageUrl = await fetchWikipediaLeadImageForCandidates(getWikiCandidates(m.key));
           return { ...m, imageUrl };
         })
       );
 
-      // sort by distance ascending
       withImages.sort((a, b) => a.distKm - b.distKm);
       setGeoMatches(withImages);
     } finally {
@@ -446,7 +530,7 @@ export default function SearchPage() {
           </Button>
         </div>
 
-        {/* TEXT MODE (category dropdown → map + details) */}
+        {/* TEXT MODE (category dropdown → map + details + 5 Wikipedia thumbnails) */}
         {mode === "text" && (
           <Card>
             <CardContent className="p-6 space-y-5">
@@ -457,6 +541,7 @@ export default function SearchPage() {
                   onChange={(e) => {
                     setSelectedCategory(e.target.value);
                     setSelectedInfo(null);
+                    setThumbs([]);
                   }}
                 >
                   <option value="" disabled>
@@ -477,7 +562,7 @@ export default function SearchPage() {
                 </Button>
               </form>
 
-              {/* When a category is chosen & searched: map + description + fun facts + image placeholders */}
+              {/* When a category is chosen & searched: map + description + fun facts + images */}
               {selectedInfo ? (
                 <div className="space-y-5">
                   {/* Map to origin */}
@@ -489,10 +574,10 @@ export default function SearchPage() {
                       maxBounds={MAX_BOUNDS}
                       maxBoundsViscosity={1.0}
                       scrollWheelZoom
-                      attributionControl={true}
+                      attributionControl={false}
                     >
                       <TileLayer
-                        attribution='&copy; OpenStreetMap contributors'
+                        attribution="&copy; OpenStreetMap contributors"
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       />
                       <Marker position={[selectedInfo.lat, selectedInfo.lng]} />
@@ -520,26 +605,37 @@ export default function SearchPage() {
                     </div>
                   )}
 
-                  {/* Image placeholders (for future Wiki/Commons images) */}
+                  {/* Wikipedia Images (Top 5) */}
                   <div className="space-y-2">
-                    <h4 className="font-semibold">Images</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      {[0, 1, 2, 3, 4].map((i) => (
-                        <div
-                          key={i}
-                          className="aspect-square bg-gray-100 border rounded-md flex items-center justify-center text-xs text-gray-500"
-                        >
-                          Image {i + 1}
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      (These will load from Wiki/Commons via API in a later step.)
+                    <h4 className="font-semibold">Images (Wikipedia)</h4>
+                    {thumbs.length === 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <div key={i} className="aspect-video bg-gray-100 border rounded-md animate-pulse" />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        {thumbs.map((src, i) => (
+                          <img
+                            key={i}
+                            src={src}
+                            alt={`${selectedCategory} ${i + 1}`}
+                            className="w-full h-full object-cover rounded-md border"
+                            loading="lazy"
+                          />
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-[10px] text-gray-500">
+                      Thumbnails via Wikipedia (search terms tried: {getWikiCandidates(selectedCategory).join(", ")}).
                     </p>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">Pick a category and click Search to see its origin.</p>
+                <p className="text-sm text-muted-foreground">
+                  Pick a category and click Search to see its origin and images.
+                </p>
               )}
             </CardContent>
           </Card>
@@ -587,10 +683,10 @@ export default function SearchPage() {
                   maxBounds={MAX_BOUNDS}
                   maxBoundsViscosity={1.0}
                   scrollWheelZoom
-                  attributionControl={true}
+                  attributionControl={false}
                 >
                   <TileLayer
-                    attribution='&copy; OpenStreetMap contributors'
+                    attribution="&copy; OpenStreetMap contributors"
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
 
@@ -626,8 +722,11 @@ export default function SearchPage() {
                             // Switch to Text tab, load category, and update URL for shareability
                             setSelectedCategory(m.key);
                             setSelectedInfo(m.info);
+                            setThumbs([]); // will refetch for text view
                             setMode("text");
                             setLocation(`/search?category=${encodeURIComponent(m.key)}`);
+                            // Trigger image fetch immediately with candidate terms
+                            fetchWikipediaThumbnailsForCandidates(getWikiCandidates(m.key), 5).then(setThumbs);
                           }}
                           className="w-72 flex-shrink-0 border rounded-xl bg-white shadow-sm hover:shadow-md transition text-left"
                         >
@@ -644,9 +743,7 @@ export default function SearchPage() {
                             <div className="text-xs text-gray-500 mb-1">
                               {m.info.originName} • {m.distKm.toFixed(1)} km away
                             </div>
-                            <p className="text-xs text-gray-700 line-clamp-3">
-                              {m.info.description}
-                            </p>
+                            <p className="text-xs text-gray-700 line-clamp-3">{m.info.description}</p>
                           </div>
                         </button>
                       ))}
