@@ -20,7 +20,9 @@ export default function Login() {
     setError(null);
     const res = await login(phone, password);
     setLoading(false);
-    if (res.ok) setLocation("/");
+    if (res.ok) {
+      setTimeout(() => setLocation("/"), 0);
+    }
     else setError(res.error || "Login failed");
   };
 

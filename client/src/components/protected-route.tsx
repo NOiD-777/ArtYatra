@@ -6,16 +6,15 @@ export default function Protected({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Only decide after hydration completes
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       setLocation("/login");
     }
   }, [loading, isAuthenticated, setLocation]);
 
-  // While hydrating, render a lightweight placeholder (avoids flicker/redirect loop)
+  // During hydration, render a neutral screen to avoid flicker/loops
   if (loading) {
-    return <div className="min-h-screen bg-cream" />; // or your spinner component
+    return <div className="min-h-screen bg-cream" />;
   }
 
   if (!isAuthenticated) return null;
