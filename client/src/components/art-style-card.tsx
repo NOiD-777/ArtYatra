@@ -15,7 +15,9 @@ const getArtStyleImage = (artStyleName: string): string => {
     'Thanjavur Painting': 'https://5.imimg.com/data5/SELLER/Default/2023/6/318788257/ZT/MC/AM/30597499/gaja-lakshmi-tanjore-painting.jpg',
     'Madhubani Painting': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4sVlLc1XrhZXvPk3haP-bMeL0eqlGsZuRbQ&s',
     'Kalamkari': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZEbHyRDj6i9GLO3ldR0kd1opqHAJOx7iCNw&s',
-    'Pattachitra': 'https://hobbyindia.store/cdn/shop/products/C1195_1200x1200.jpg?v=1720769027',
+    'Pattachitra': 'https://hobbyindia.store/cdn/shop/products/C1195_1200x1200.jpg?v=1720769027'
+    'Gond Art': 'https://www.memeraki.com/cdn/shop/files/Bonds-of-Beauty-Gond-Art-Expressions-by-Kailash-Pradhan-2_800x.png?v=1726338113',
+    'Pichwai Painting': 'https://cdn.shopify.com/s/files/1/0259/9737/7594/files/11c_a355f480-8a4e-46db-98a9-e8d4fb1e09d6_300x@2x.jpg?v=1693132118',
   };
   
   return imageMap[artStyleName] || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400';
