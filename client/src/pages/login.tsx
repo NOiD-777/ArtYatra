@@ -9,7 +9,7 @@ import { Lock, Phone } from "lucide-react";
 export default function Login() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(""); // Only 10-digit input
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,12 +18,15 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const res = await login(phone, password);
+
+    // Combine +91 with user input before sending
+    const fullPhone = `+91${phone}`;
+    const res = await login(fullPhone, password);
+
     setLoading(false);
     if (res.ok) {
       setTimeout(() => setLocation("/"), 0);
-    }
-    else setError(res.error || "Login failed");
+    } else setError(res.error || "Login failed");
   };
 
   return (
@@ -38,16 +41,23 @@ export default function Login() {
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Phone</label>
-              <div className="mt-1 relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                </span>
+              <div className="mt-1 flex">
+                {/* Fixed +91 box */}
+                <div className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-700">
+                  +91
+                </div>
+
+                {/* User input box */}
                 <Input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91XXXXXXXXXX"
-                  className="pl-10"
+                  onChange={(e) => {
+                    // Allow only numbers and max 10 digits
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    setPhone(val);
+                  }}
+                  placeholder="XXXXXXXXXX"
+                  className="rounded-l-none flex-1"
                   required
                 />
               </div>
