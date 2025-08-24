@@ -267,7 +267,7 @@ export default function UploadChunkOnly() {
                   <option value="bengali">Bengali</option>
                   <option value="bodo">Bodo</option>
                   <option value="dogri">Dogri</option>
-                  <option value="gujrati">Gujrati</option>
+                  <option value="gujarati">Gujarati</option>
                   <option value="hindi">Hindi</option>
                   <option value="kannada">Kannada</option>
                   <option value="kashmiri">Kashmiri</option>
