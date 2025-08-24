@@ -56,7 +56,7 @@ export default function ArtStyleCard({
       <img 
         src={imageUrl} 
         alt={`${artStyle.name} example`}
-        className="w-full auto object-contain"
+        className="w-full h-48 object-cover"
         data-testid={`img-art-style-${artStyle.id}`}
       />
       
