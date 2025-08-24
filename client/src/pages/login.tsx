@@ -1,32 +1,48 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
-import { Lock, Phone } from "lucide-react";
+import { Lock } from "lucide-react";
+
+const LOGOUT_REASON_KEY = "logout_reason";
 
 export default function Login() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
-  const [phone, setPhone] = useState(""); // Only 10-digit input
+  const [phone, setPhone] = useState(""); // 10-digit input only (we prepend +91)
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Show “session timed out / signed out” message when redirected here
+  useEffect(() => {
+    try {
+      const reason = sessionStorage.getItem(LOGOUT_REASON_KEY);
+      if (reason) {
+        setError(reason);
+        sessionStorage.removeItem(LOGOUT_REASON_KEY);
+      }
+    } catch {}
+  }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Combine +91 with user input before sending
+    // Always send +91 prefix
     const fullPhone = `+91${phone}`;
     const res = await login(fullPhone, password);
 
     setLoading(false);
     if (res.ok) {
+      // short delay to allow context to propagate
       setTimeout(() => setLocation("/"), 0);
-    } else setError(res.error || "Login failed");
+    } else {
+      setError(res.error || "Login failed");
+    }
   };
 
   return (
@@ -37,6 +53,12 @@ export default function Login() {
             <h1 className="text-2xl font-bold text-gray-900">Welcome to ArtYatra</h1>
             <p className="text-sm text-gray-600 mt-1">Please sign in to continue</p>
           </div>
+
+          {error && (
+            <div className="mb-4 rounded border border-orange-300 bg-orange-50 px-3 py-2 text-sm text-orange-800">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
@@ -79,8 +101,6 @@ export default function Login() {
                 />
               </div>
             </div>
-
-            {error && <p className="text-sm text-red-600">{error}</p>}
 
             <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={loading}>
               {loading ? "Signing in..." : "Sign in"}
