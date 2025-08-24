@@ -8,7 +8,7 @@ import { ArrowLeft, Upload } from "lucide-react";
 
 export default function UploadChunkOnly() {
   const [, setLocation] = useLocation();
-  const { token } = useAuth(); // Swecha JWT
+  const { token, userId } = useAuth(); // ✅ also get userId
 
   const [fileObj, setFileObj] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -20,8 +20,8 @@ export default function UploadChunkOnly() {
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-  const [releaseRights, setReleaseRights] = useState("creator"); // default
-  const [language, setLanguage] = useState("telugu"); // default
+  const [releaseRights, setReleaseRights] = useState("creator");
+  const [language, setLanguage] = useState("telugu");
 
   // Revoke preview URL on unmount/change
   useEffect(() => {
@@ -79,6 +79,7 @@ export default function UploadChunkOnly() {
 
     if (!fileObj) return setMessage("❌ Please select an image.");
     if (!token) return setMessage("❌ Missing Swecha token — please log in again.");
+    if (!userId) return setMessage("❌ Missing Swecha user ID — please log in again.");
     if (!latitude || !longitude) return setMessage("❌ Latitude and Longitude are required.");
     if (!title || !description) return setMessage("❌ Title and Description are required.");
     if (releaseRights === "downloaded")
@@ -117,7 +118,7 @@ export default function UploadChunkOnly() {
       params.append("longitude", longitude);
       params.append("use_uid_filename", "false");
       params.append("release_rights", releaseRights);
-      params.append("user_id", "56348033-3610-45ec-9a0b-342e2075091f"); // fixed
+      params.append("user_id", userId); // ✅ now dynamic from AuthContext
       params.append("media_type", "image");
       params.append("title", title);
       params.append("language", language);
