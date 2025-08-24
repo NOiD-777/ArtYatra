@@ -1,8 +1,8 @@
 # Contributors 👩‍🎨👨‍🎨
 
-This project is a collaborative effort to build **ArtYatra**, a full-stack web application for exploring Indian art styles interactively.  
+This project is a collaborative effort to build **ArtYatra**, a full-stack web application that brings India's rich artistic heritage to life through **AI-powered image classification**, **interactive mapping**, and **cultural exploration**.  
 
-We welcome contributions from anyone interested in improving the project — from frontend design and backend APIs to AI integration and database management.
+While contributions are welcome from anyone, **Abhinay** led the development of this project, making key contributions in **frontend UI (React + Tailwind CSS)** and **Swecha API integration**.
 
 ---
 
@@ -10,19 +10,23 @@ We welcome contributions from anyone interested in improving the project — fro
 
 | Name           | Role / Contribution                                  | Contact / GitHub                       |
 |----------------|------------------------------------------------------|----------------------------------------|
-| Arushi         | Frontend development, React + Tailwind CSS           | [GitHub](https://github.com/arushimathur2604)   |
-| Akash D.       | Full-stack development, backend Node.js/Express      | [GitHub](https://github.com/akash-cse-projects-05)  |
-| Abhinay        | Database schema & sample data                        | [GitHub](https://github.com/NOiD-777)  |
-| Vishesh Chawan | Gemini API integration & image classification        | [GitHub](https://github.com/visheshchawan) |
+| **Abhinay**    | Lead developer, frontend UI (React + Tailwind CSS), Swecha API integration | [GitHub](https://github.com/NOiD-777) |
+| Arushi         | Assisted in frontend UI design, reusable React components, interactive mapping UI | [GitHub](https://github.com/arushimathur2604) |
+| Akash D.       | Backend route handling, server logic, file upload management | [GitHub](https://github.com/akash-cse-projects-05) |
+| Vishesh Chawan | AI image classification integration (Google Gemini API), model reasoning & confidence scoring | [GitHub](https://github.com/visheshchawan) |
 
 ---
 
 ## How to Contribute
 
-1. **Fork the repository** and clone it locally.
+1. **Fork the repository** and clone it locally:
+   ```bash
+   git clone <repository-url>
+   cd ArtYatra
+   ```
 2. **Create a branch** for your feature or bug fix:
    ```bash
-   git checkout -b feature-name
+   git checkout -b feature/your-feature
    ```
 3. **Make your changes** and test them thoroughly.
 4. **Commit your changes** with a clear, descriptive message:
@@ -31,7 +35,7 @@ We welcome contributions from anyone interested in improving the project — fro
    ```
 5. **Push to your fork** and create a Pull Request:
    ```bash
-   git push origin feature-name
+   git push origin feature/your-feature
    ```
 6. **Fill out the PR template** with details about your changes.
 
@@ -40,37 +44,27 @@ We welcome contributions from anyone interested in improving the project — fro
 ## Development Setup
 
 ### Prerequisites
-- Node.js (v18 or higher)
+- Node.js 18+ 
 - npm or yarn
-- PostgreSQL (for database)
+- Google Gemini API key (for AI integration)
 
 ### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/ArtYatra.git
-   cd ArtYatra
-   ```
 
-2. Install dependencies:
+1. **Install dependencies**
    ```bash
    npm install
    ```
-
-3. Set up environment variables:
+2. **Environment configuration**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your API keys and server configuration
    ```
-
-4. Run database migrations:
-   ```bash
-   npm run db:push
-   ```
-
-5. Start the development server:
+3. **Start development server**
    ```bash
    npm run dev
    ```
+   - Frontend: http://localhost:5173  
+   - Backend API: http://localhost:5000  
 
 ---
 
@@ -78,17 +72,22 @@ We welcome contributions from anyone interested in improving the project — fro
 
 ```
 ArtYatra/
-├── client/          # React frontend
+├── client/                 # React Frontend Application
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── lib/
-├── server/          # Node.js backend
-│   ├── services/
-│   ├── routes.ts
-│   └── index.ts
-├── shared/          # Shared types and schemas
-└── CONTRIBUTING.md
+│   │   ├── components/    # Reusable UI Components
+│   │   ├── pages/         # Route Components
+│   │   ├── contexts/      # React Contexts
+│   │   ├── hooks/         # Custom Hooks
+│   │   ├── lib/           # Utilities & Configs
+│   │   └── index.css       # Global Styles
+├── server/                 # Express Backend
+│   ├── index.ts           # Server Entry & Middleware
+│   ├── routes.ts          # API Route Definitions
+│   ├── services/          # Business Logic
+│   ├── storage.ts         # In-Memory Storage (static data)
+│   └── vite.ts            # Vite Integration
+├── shared/                # Shared Code (types & schemas)
+└── Configuration Files
 ```
 
 ---
@@ -97,26 +96,22 @@ ArtYatra/
 
 ### Frontend (React/TypeScript)
 - Use functional components with hooks
-- Follow the existing component structure
-- Use Tailwind CSS for styling
-- Ensure responsive design
+- Follow the existing component and page structure
+- Use Tailwind CSS for consistent styling
+- Ensure responsive and accessible design
 
 ### Backend (Node.js/Express)
 - Use TypeScript for all server code
 - Follow RESTful API conventions
-- Include proper error handling
-- Add appropriate logging
-
-### Database
-- Use Drizzle ORM for database operations
-- Follow the existing schema patterns
-- Include migrations for schema changes
+- Include proper error handling and logging
+- Handle file uploads and API requests securely
 
 ---
 
 ## Reporting Issues
 
 If you find a bug or have a feature request:
+
 1. Check existing issues first
 2. Create a new issue with:
    - Clear title and description
@@ -129,17 +124,15 @@ If you find a bug or have a feature request:
 ## Code Review Process
 
 1. All PRs require at least one review
-2. Address all feedback before merging
+2. Address feedback before merging
 3. Ensure CI checks pass
-4. Keep PRs focused and small when possible
+4. Keep PRs focused and concise
 
 ---
 
-## Questions?
+## Questions
 
-Feel free to:
-- Open an issue for questions
-- Join our discussions
-- Reach out to core contributors
+- Open an issue for questions or discussions  
+- Reach out to core contributors  
 
-Thank you for contributing to ArtYatra! 🎨
+Thank you for contributing to **ArtYatra**! 🎨
