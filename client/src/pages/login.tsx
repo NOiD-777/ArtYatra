@@ -51,7 +51,7 @@ export default function Login() {
         <CardContent className="pt-8">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Welcome to ArtYatra</h1>
-            <p className="text-sm text-gray-600 mt-1">Please sign in to continue</p>
+            <p className="text-sm text-gray-600 mt-1">Please sign in using your Swecha account to continue</p>
           </div>
 
           {error && (
