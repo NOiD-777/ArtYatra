@@ -209,7 +209,7 @@ export default function SignUp() {
               <Input
                 value={place}
                 onChange={(e) => setPlace(e.target.value)}
-                placeholder="Hyderabad"
+                placeholder="Ex. Hyderabad"
                 required
               />
             </div>
