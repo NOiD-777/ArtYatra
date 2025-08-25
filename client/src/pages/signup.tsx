@@ -114,7 +114,7 @@ export default function SignUp() {
       <Card className="w-full max-w-lg shadow-xl border border-orange-100">
         <CardContent className="pt-8">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Create your Swecha account</h1>
             <p className="text-sm text-gray-600 mt-1">Join ArtYatra</p>
           </div>
 
