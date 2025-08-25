@@ -9,12 +9,14 @@ import Map from "@/pages/map";
 import NotFound from "@/pages/not-found";
 import UploadToDatabase from "@/pages/upload-db";
 import Login from "@/pages/login";
+import SignUp from "@/pages/signup";
 import Protected from "@/components/protected-route";
 
 function Router() {
   return (
     <Switch>
       <Route path="/login" component={Login} />
+      <Route path="/signup" component={SignUp} />
       <Route path="/">
         <Protected>
           <Home />

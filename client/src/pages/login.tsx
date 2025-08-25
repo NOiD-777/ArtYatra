@@ -102,7 +102,11 @@ export default function Login() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600"
+              disabled={loading}
+            >
               {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
@@ -110,6 +114,18 @@ export default function Login() {
           <p className="text-xs text-gray-500 mt-4">
             By signing in, you agree to our Terms & Privacy Policy.
           </p>
+
+          {/* --- Sign Up Button --- */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-700">Don’t have an account?</p>
+            <Button
+              variant="secondary"
+              className="mt-2 w-full"
+              onClick={() => setLocation("/signup")}
+            >
+              Create an account
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
