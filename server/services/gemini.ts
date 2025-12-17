@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ 
-  apiKey: "AIzaSyBbRVwFsfCvRyvu_-wswXjESh6DoO-DWcE" 
+  apiKey: "AIzaSyCiagFfTCrUmowvKkn34GsMCo-HVp1RyjQ" 
 });
 
 export interface ArtClassificationResult {
